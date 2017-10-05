@@ -1,12 +1,13 @@
 package com.company;
 
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by jinostrozau on 05-10-2017.
  */
-public class Supermercado implements InterfaceSuper{
+public class Simulador implements InterfaceSuper{
 
     public LinkedList<Cliente> filaClientes;
     public Cliente cliente;
@@ -18,9 +19,34 @@ public class Supermercado implements InterfaceSuper{
     public Caja caja3 = null;
     public Caja caja4 = null;
 
+    static Random rnd;
+    static double time;
+    double endTime;
+
+    Simulador(long seed, double simDuration) {
+        time = 0.0;
+        //events = new ListQueue();
+        rnd = new Random(seed);
+        endTime = simDuration;
+    }
+
+    Simulador(){}
+
+    void doAllEvents() {
+        Evento e;
+        while ((e = (Evento) events.removeFirst()) != null && time < endTime) {
+            if(time > e.time)
+                System.out.printf("Something is worng! time=%f eventtime=%f",time,e.time);
+            time = e.time;
+            e.run();
+            System.out.printf("\n Time = %f", time);
+
+        }
+    }
+
     public static void main(String[] args) {
 
-        Supermercado simulador = new Supermercado();
+        Simulador simulador = new Simulador();
 
         simulador.init(23);
 
@@ -59,14 +85,10 @@ public class Supermercado implements InterfaceSuper{
         cliente.setComprando(true);
         cliente.getIdCaja();
         System.out.println("Cliente comprando en caja "+cliente.getIdCaja());
-        filaClientes.remove(idCliente); //elimina al cliente de la fila
+        filaClientes.removeFirst(); //elimina al 1er cliente de la fila
         clientesAtendidos++;
 
         System.out.println("Total Clientes  en fila: "+filaClientes.size());
-    }
-
-    public void salir(){
-
     }
 
     public void validaCaja4(){
