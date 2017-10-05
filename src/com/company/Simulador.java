@@ -18,6 +18,9 @@ public class Simulador implements InterfaceSuper{
     public Caja caja2 = null;
     public Caja caja3 = null;
     public Caja caja4 = null;
+    int numClientes = 0 ;
+    int min=1;
+    int max=3;
 
     static Random rnd;
     static double time;
@@ -32,23 +35,12 @@ public class Simulador implements InterfaceSuper{
 
     Simulador(){}
 
-    void doAllEvents() {
-        Evento e;
-        while ((e = (Evento) events.removeFirst()) != null && time < endTime) {
-            if(time > e.time)
-                System.out.printf("Something is worng! time=%f eventtime=%f",time,e.time);
-            time = e.time;
-            e.run();
-            System.out.printf("\n Time = %f", time);
-
-        }
-    }
 
     public static void main(String[] args) {
 
         Simulador simulador = new Simulador();
-
-        simulador.init(23);
+        simulador.init(25); //se inicializa con cantidad de clientes
+        simulador.test();
 
         for(int i=0;i<5;i++) {
             simulador.compra(i);
@@ -57,9 +49,7 @@ public class Simulador implements InterfaceSuper{
         System.out.println("Total Clientes Atendidos: "+simulador.getClientesAtendidos());
     }
 
-    public  void init(int numClientes){
-        int min = 1;
-        int max = 3;
+    public void init(int numClientes){
 
         filaClientes = new LinkedList<Cliente>();
 
@@ -68,6 +58,15 @@ public class Simulador implements InterfaceSuper{
         caja3 = new Caja(3, true, 120, 240);
         caja4 = new Caja(4, true, 120, 270);
 
+        this.numClientes = numClientes;
+
+    }
+
+    public void test(){
+
+        if(caja4.isDisponible()){
+            max = 4;
+        }
 
         for (int i=0;i<numClientes;i++) {
             int idCaja = ThreadLocalRandom.current().nextInt(min, max + 1); //numero aleatorio caja
@@ -99,6 +98,18 @@ public class Simulador implements InterfaceSuper{
             caja4.setDisponible(false);
             System.out.println("Caja 4 deshabilitada");
         }
+    }
+
+    void doAllEvents() {
+        Evento e;
+        /*while ((e = (Evento) events.removeFirst()) != null && time < endTime) {
+            if(time > e.time)
+                System.out.printf("Something is worng! time=%f eventtime=%f",time,e.time);
+            time = e.time;
+            e.run();
+            System.out.printf("\n Time = %f", time);
+
+        }*/
     }
 
     @Override
