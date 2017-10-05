@@ -5,6 +5,8 @@ package com.company;
  */
 public interface InterfaceSuper {
 
+    public void compra(int idCliente);
+
     public int getClientesAtendidos();
 
     public int getTamanoMedioFila();

@@ -1,48 +1,106 @@
 package com.company;
 
 import java.util.LinkedList;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by jinostrozau on 05-10-2017.
  */
-public class Supermercado {
+public class Supermercado implements InterfaceSuper{
 
-    private String nombre;
-    private LinkedList<Cliente> filaClientes;
-    private Cliente cliente;
-    private Caja caja;
-    private final int HORARIOATENCION = 420; // 7 horas en minutos
+    public LinkedList<Cliente> filaClientes;
+    public Cliente cliente;
+    public Caja caja;
+    public final int HORARIOATENCION = 420; // 7 horas en minutos
+    public int clientesAtendidos = 0;
+    public Caja caja1 = null;
+    public Caja caja2 = null;
+    public Caja caja3 = null;
+    public Caja caja4 = null;
 
+    public static void main(String[] args) {
 
-    public String getNombre() {
-        return nombre;
+        Supermercado simulador = new Supermercado();
+
+        simulador.init(23);
+
+        for(int i=0;i<5;i++) {
+            simulador.compra(i);
+        }
+
+        System.out.println("Total Clientes Atendidos: "+simulador.getClientesAtendidos());
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public  void init(int numClientes){
+        int min = 1;
+        int max = 3;
+
+        filaClientes = new LinkedList<Cliente>();
+
+        caja1 = new Caja(1, true, 90, 150);
+        caja2 = new Caja(2, true, 120, 300);
+        caja3 = new Caja(3, true, 120, 240);
+        caja4 = new Caja(4, true, 120, 270);
+
+
+        for (int i=0;i<numClientes;i++) {
+            int idCaja = ThreadLocalRandom.current().nextInt(min, max + 1); //numero aleatorio caja
+            cliente = new Cliente(i,idCaja, false );
+            filaClientes.add(cliente);
+            System.out.println("Total Clientes  en fila: "+filaClientes.size());
+        }
     }
 
-    public LinkedList<Cliente> getFilaClientes() {
-        return filaClientes;
+    @Override
+    public void compra(int idCliente) {
+
+        validaCaja4();
+        cliente = filaClientes.get(idCliente);
+        cliente.setComprando(true);
+        cliente.getIdCaja();
+        System.out.println("Cliente comprando en caja "+cliente.getIdCaja());
+        filaClientes.remove(idCliente); //elimina al cliente de la fila
+        clientesAtendidos++;
+
+        System.out.println("Total Clientes  en fila: "+filaClientes.size());
     }
 
-    public void setFilaClientes(LinkedList<Cliente> filaClientes) {
-        this.filaClientes = filaClientes;
+    public void salir(){
+
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public void validaCaja4(){
+        if(filaClientes.size()>20){ //abre caja 4
+            caja4.setDisponible(true);
+            System.out.println("Caja 4 habilitada");
+        }else{
+            caja4.setDisponible(false);
+            System.out.println("Caja 4 deshabilitada");
+        }
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    @Override
+    public int getClientesAtendidos() {
+        return clientesAtendidos;
     }
 
-    public Caja getCaja() {
-        return caja;
+    @Override
+    public int getTamanoMedioFila() {
+        return 0;
     }
 
-    public void setCaja(Caja caja) {
-        this.caja = caja;
+    @Override
+    public int getTamanoMaximoFila() {
+        return 0;
+    }
+
+    @Override
+    public int getTiempoMaximoEspera() {
+        return 0;
+    }
+
+    @Override
+    public int getTiempoAbiertaCuartaCaja() {
+        return 0;
     }
 }

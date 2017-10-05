@@ -9,6 +9,13 @@ public class Cliente {
     private int idCaja;
     private boolean isComprando;
 
+
+    public Cliente(int idCliente, int idCaja, boolean isComprando){
+        this.idCliente = idCliente;
+        this.idCaja = idCaja;
+        this.isComprando = isComprando;
+    }
+
     public int getIdCliente() {
         return idCliente;
     }
